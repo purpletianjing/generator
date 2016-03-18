@@ -1,14 +1,12 @@
 [{
-  "id" : 1,
-  "name" : "purple",
-  "age" : 19,
-  "gender" : "F",
+  "password" : "purple",
+  "createDate" : 19,
+  "mobilePhone" : "13784937485",
   "email" : "a@b.com"
 },
 {
-  "id" : 2,
-  "name" : "anlihuer",
-  "age" : 20,
-  "gender" : "M",
+  "password" : "anlihuer",
+  "createDate" : 20,
+  "mobilePhone" : "13894038493",
   "email" : "b@c.com"
 }]
