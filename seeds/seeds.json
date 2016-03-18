@@ -1,0 +1,12 @@
+[{
+  "name" : "purple",
+  "age" : 19,
+  "gender" : "F",
+  "email" : "a@b.com"
+},
+{
+  "name" : "anlihuer",
+  "age" : 20,
+  "gender" : "M",
+  "email" : "b@c.com"
+}]
