@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Locale;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -37,15 +38,14 @@ public class Generator {
 
         for (Object o : jsonArray) {
             JSONObject person = (JSONObject) o;
+            long id = (Long) person.get("id");
             String name = (String) person.get("name");
             long age = (Long) person.get("age");
             String gender = (String) person.get("gender");
             String email = (String) person.get("email");
 
-            System.out.println("name: " + name + "age: " + age + "gender" + gender + "email" + email);
-
+            System.out.println("name: " + name + ", age: " + age + ", gender" + gender + ", email" + email);
         }
-
   }
 
     public static void main(String[] args) throws IOException, ParseException {
