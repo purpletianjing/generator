@@ -1,11 +1,13 @@
 package javaFile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Locale;
+import java.io.*;
 
+import javaFile.bean.User;
+import javaFile.mapper.UserMapper;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -37,22 +39,40 @@ public class Generator {
         JSONArray jsonArray = (JSONArray)parser.parse(new FileReader(jsonFile));
 
         for (Object o : jsonArray) {
+            User user = new User();
             JSONObject person = (JSONObject) o;
-            long id = (Long) person.get("id");
-            String name = (String) person.get("name");
-            long age = (Long) person.get("age");
-            String gender = (String) person.get("gender");
+            String password = (String) person.get("password");
+            int createDate = Integer.parseInt(String.valueOf(person.get("createDate")));
+            String mobilePhone = (String) person.get("mobilePhone");
             String email = (String) person.get("email");
+            user.setEmail(email);
+            user.setPassword(password);
+            user.setMobilePhone(mobilePhone);
+            user.setCreateDate(createDate);
+            this.insertJsonToDatabase(user);
 
-            System.out.println("name: " + name + ", age: " + age + ", gender" + gender + ", email" + email);
+            System.out.println( "password: " + password + ", createDate: " + createDate + ", mobilePhone" + mobilePhone + ", email" + email);
         }
   }
+
+    public void insertJsonToDatabase(User user) throws IOException{
+        String resource = "resources/mybatis/config_mybatis.xml";
+        Reader reader = Resources.getResourceAsReader(resource);
+        SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
+        SqlSession sqlSession = sqlSessionFactory.openSession();
+        final UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+
+        userMapper.insertUser(user);
+        sqlSession.commit();
+        sqlSession.close();
+    }
 
     public static void main(String[] args) throws IOException, ParseException {
         Generator generator = new Generator();
         File directory = new File("/Users/twer/works/generate-logic-puzzle/seeds");
         generator.operateDirectory(directory);
         generator.checkJson(directory);
+
     }
 
 }
