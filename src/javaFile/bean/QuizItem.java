@@ -11,6 +11,7 @@ public class QuizItem {
     String chartPath;
     String infoPath;
 
+
     public void setInfoPath(String infoPath) {
         this.infoPath = infoPath;
     }

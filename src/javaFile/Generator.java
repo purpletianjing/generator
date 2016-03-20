@@ -2,7 +2,9 @@ package javaFile;
 
 import java.io.*;
 
+import javaFile.bean.QuizItem;
 import javaFile.bean.User;
+import javaFile.mapper.QuizItemMapper;
 import javaFile.mapper.UserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -22,57 +24,60 @@ public class Generator {
     }
 
     public void checkJson(final File directory) throws IOException, ParseException {
-        Generator generator = new Generator();
         File[] fList = directory.listFiles();
 
-        for (File file : fList) {
-            generator.readJson(file);
-            String fileName  = file.getName();
-            if (file.isFile() && (fileName.substring(fileName.lastIndexOf(".") + 1)).equals("json")) {
+        for (int i = 0; i < 10; i++) {
+            String fileName  = fList[i].getName();
+            if (fList[i].isFile() && (fileName.substring(fileName.lastIndexOf(".") + 1)).equals("json")) {
+                this.readJson(fList[i], fList[i + 1]);
                 System.out.println("this is a json file");
             }
         }
     }
 
-    public void readJson(File jsonFile) throws IOException, ParseException{
+    public void readJson(File jsonFile, File pictureFile) throws IOException, ParseException{
         JSONParser parser = new JSONParser();
-        JSONArray jsonArray = (JSONArray)parser.parse(new FileReader(jsonFile));
+        JSONObject logicPuzzle = (JSONObject)parser.parse(new FileReader(jsonFile));
 
-        for (Object o : jsonArray) {
-            User user = new User();
-            JSONObject person = (JSONObject) o;
-            String password = (String) person.get("password");
-            int createDate = Integer.parseInt(String.valueOf(person.get("createDate")));
-            String mobilePhone = (String) person.get("mobilePhone");
-            String email = (String) person.get("email");
-            user.setEmail(email);
-            user.setPassword(password);
-            user.setMobilePhone(mobilePhone);
-            user.setCreateDate(createDate);
-            this.insertJsonToDatabase(user);
-
-            System.out.println( "password: " + password + ", createDate: " + createDate + ", mobilePhone" + mobilePhone + ", email" + email);
-        }
+            QuizItem quizItem = new QuizItem();
+            String stepsString = (String) logicPuzzle.get("steps_string");
+            int count = Integer.parseInt(String.valueOf(logicPuzzle.get("count")));
+            String questionZh = (String) logicPuzzle.get("question_zh");
+            int stepsLength = Integer.parseInt(String.valueOf(logicPuzzle.get("steps_length")));
+            int maxUpdateTimes = Integer.parseInt(String.valueOf(logicPuzzle.get("max_update_times")));
+            String answer = String.valueOf(logicPuzzle.get("answer"));
+            String descZh = logicPuzzle.get("desc_zh").toString();
+            String chartPath = pictureFile.getPath();
+            String infoPath = jsonFile.getPath();
+            quizItem.setAnswer(answer);
+            quizItem.setChartPath(chartPath);
+            quizItem.setCount(count);
+            quizItem.setDescriptionZh(descZh);
+            quizItem.setInfoPath(infoPath);
+            quizItem.setMaxUpdateTimes(maxUpdateTimes);
+            quizItem.setQuestionZh(questionZh);
+            quizItem.setStepsLength(stepsLength);
+            quizItem.setStepsString(stepsString);
+            this.insertJsonToDatabase(quizItem);
   }
 
-    public void insertJsonToDatabase(User user) throws IOException{
+    public void insertJsonToDatabase(QuizItem quizItem) throws IOException{
         String resource = "resources/mybatis/config_mybatis.xml";
         Reader reader = Resources.getResourceAsReader(resource);
         SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
         SqlSession sqlSession = sqlSessionFactory.openSession();
-        final UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
-
-        userMapper.insertUser(user);
+        final QuizItemMapper quizItemMapper = sqlSession
+                .getMapper(QuizItemMapper.class);
+        quizItemMapper.insertQuizItem(quizItem);
         sqlSession.commit();
         sqlSession.close();
     }
 
     public static void main(String[] args) throws IOException, ParseException {
         Generator generator = new Generator();
-        File directory = new File("/Users/twer/works/generate-logic-puzzle/seeds");
+        File directory = new File("/Users/twer/works/generate-logic-puzzle/logic-puzzle");
         generator.operateDirectory(directory);
         generator.checkJson(directory);
-
     }
 
 }

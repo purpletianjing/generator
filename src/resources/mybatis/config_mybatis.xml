@@ -16,5 +16,6 @@
     </environments>
     <mappers>
         <mapper resource="resources/mybatis/UserMapper.xml"/>
+        <mapper resource="resources/mybatis/QuizItemMapper.xml"></mapper>
     </mappers>
 </configuration>
