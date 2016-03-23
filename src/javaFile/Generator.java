@@ -3,14 +3,11 @@ package javaFile;
 import java.io.*;
 
 import javaFile.bean.QuizItem;
-import javaFile.bean.User;
 import javaFile.mapper.QuizItemMapper;
-import javaFile.mapper.UserMapper;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
